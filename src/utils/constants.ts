@@ -7,12 +7,12 @@ export const GRID_ROWS = 5
 export const GRID_COLS = 9
 
 // 网格起始偏移（相对于设计分辨率）
-export const GRID_OFFSET_X = 40
+export const GRID_OFFSET_X = 128
 export const GRID_OFFSET_Y = 85
 
 // 单元格尺寸
-export const CELL_WIDTH = 82
-export const CELL_HEIGHT = 100
+export const CELL_WIDTH = 62
+export const CELL_HEIGHT = 95
 
 // 工具栏高度
 export const TOOLBAR_HEIGHT = 80

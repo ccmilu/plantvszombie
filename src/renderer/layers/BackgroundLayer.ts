@@ -10,7 +10,7 @@ export class BackgroundLayer {
 
   render(ctx: CanvasRenderingContext2D): void {
     if (this.bgImage) {
-      ctx.drawImage(this.bgImage, 0, 0, DESIGN_WIDTH, DESIGN_HEIGHT)
+      ctx.drawImage(this.bgImage, -50, 0, 1050, DESIGN_HEIGHT)
     } else {
       // 无背景图时使用纯色
       ctx.fillStyle = '#4a7c10'
