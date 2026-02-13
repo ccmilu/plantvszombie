@@ -7,6 +7,7 @@ import { Toolbar } from './Toolbar.tsx'
 import { GameOverModal } from './GameOverModal.tsx'
 import { PauseOverlay } from './PauseOverlay.tsx'
 import { ProgressBar } from './ProgressBar.tsx'
+import { toggleFullscreen, isFullscreen } from '../../utils/fullscreen.ts'
 
 interface GameHUDProps {
   sun: number
@@ -103,9 +104,32 @@ export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, 
         eventBus={eventBus}
       />
 
-      {/* Mute button + Pause button - top right */}
+      {/* Fullscreen + Mute + Pause buttons - top right */}
       {(gameState === GameState.PLAYING || gameState === GameState.PAUSED) && (
         <>
+          <button
+            onClick={() => toggleFullscreen()}
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '110px',
+              width: '44px',
+              height: '44px',
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              color: '#fff',
+              border: '2px solid rgba(255,255,255,0.5)',
+              borderRadius: '8px',
+              fontSize: '20px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 15,
+              pointerEvents: 'auto',
+            }}
+          >
+            {isFullscreen() ? '\u2716' : '\u26F6'}
+          </button>
           <button
             onClick={handleToggleMute}
             style={{

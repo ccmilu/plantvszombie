@@ -1,3 +1,5 @@
+import { toggleFullscreen, isFullscreen } from '../../utils/fullscreen.ts'
+
 interface MainMenuProps {
   onPlay: () => void
 }
@@ -15,7 +17,31 @@ export function MainMenu({ onPlay }: MainMenuProps) {
       alignItems: 'center',
       justifyContent: 'center',
       fontFamily: 'Arial, sans-serif',
+      position: 'relative',
     }}>
+      {/* Fullscreen button - top right */}
+      <button
+        onClick={() => toggleFullscreen()}
+        style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          width: '44px',
+          height: '44px',
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          color: '#fff',
+          border: '2px solid rgba(255,255,255,0.5)',
+          borderRadius: '8px',
+          fontSize: '20px',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        {isFullscreen() ? '\u2716' : '\u26F6'}
+      </button>
+
       <h1 style={{
         fontSize: '56px',
         color: '#fff',
