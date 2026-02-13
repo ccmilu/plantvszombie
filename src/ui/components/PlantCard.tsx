@@ -31,7 +31,7 @@ export function PlantCard({ plantType, sun, cooldownRatio, selected, onSelect, e
 
   return (
     <div
-      onClick={() => canUse && onSelect(plantType)}
+      onClick={() => (canUse || selected) && onSelect(plantType)}
       onTouchStart={handleTouchStart}
       style={{
         position: 'relative',
