@@ -18,7 +18,9 @@ export function GameScreen() {
   const { sun, gameState, cooldowns } = useGameState(eventBus)
   const overlayStyle = useCameraTransform(renderer, canvasRef)
 
-  const availablePlants = LEVELS[0]?.availablePlants ?? []
+  const currentLevel = handle?.game?.currentLevel ?? 1
+  const levelConfig = LEVELS.find(l => l.id === currentLevel)
+  const availablePlants = levelConfig?.availablePlants ?? LEVELS[0]?.availablePlants ?? []
 
   const handleRestart = useCallback(() => {
     const h = handleRef.current

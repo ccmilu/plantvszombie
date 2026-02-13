@@ -47,6 +47,9 @@ export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | nul
       handleRef.current = h
       setHandle(h)
 
+      // 暴露到 window 供调试/测试
+      ;(window as any).__pvz = h
+
       eventBus.on('TICK', () => {
         renderer.ghostPlant = inputHandler.ghostPlant
         renderer.render(game.world)
