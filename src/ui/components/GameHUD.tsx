@@ -79,13 +79,7 @@ export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, 
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [eventBus])
 
-  // 监听 PLANT_PLACED 事件来清除选择
-  useEffect(() => {
-    if (!eventBus) return
-    const onPlantPlaced = () => setSelectedPlant(null)
-    eventBus.on(GameEvent.PLANT_PLACED, onPlantPlaced)
-    return () => eventBus.off(GameEvent.PLANT_PLACED, onPlantPlaced)
-  }, [eventBus])
+  // 放置植物后保留选中状态，允许连续种植同类型植物
 
   return (
     <>

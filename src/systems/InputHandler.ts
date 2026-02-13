@@ -149,8 +149,7 @@ export class InputHandler {
 
       this.game.eventBus.emit(GameEvent.PLACE_PLANT, this.selectedPlant, gridPos.row, gridPos.col)
 
-      // 放置后取消选择
-      this.selectedPlant = null
+      // 放置后保留选中状态，允许连续种植同类型植物
       this.ghostPlant = null
     }
   }
