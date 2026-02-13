@@ -11,30 +11,30 @@ export function GameScreen() {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  const { loading, loadProgress, handleRef } = useGameEngine(canvasRef)
+  const { loading, loadProgress, handle, handleRef } = useGameEngine(canvasRef)
 
-  const eventBus = handleRef.current?.eventBus ?? null
-  const renderer = handleRef.current?.renderer ?? null
+  const eventBus = handle?.eventBus ?? null
+  const renderer = handle?.renderer ?? null
   const { sun, gameState, cooldowns } = useGameState(eventBus)
-  const overlayStyle = useCameraTransform(renderer)
+  const overlayStyle = useCameraTransform(renderer, canvasRef)
 
   const availablePlants = LEVELS[0]?.availablePlants ?? []
 
   const handleRestart = useCallback(() => {
-    const handle = handleRef.current
-    if (!handle) return
+    const h = handleRef.current
+    if (!h) return
 
     // 销毁旧的输入处理器
-    handle.inputHandler?.destroy()
+    h.inputHandler?.destroy()
 
     // 重新设置关卡
-    const levelHandle = setupLevel(handle.game, 1, handle.assets)
-    const inputHandler = new InputHandler(handle.game, handle.renderer, canvasRef.current!, levelHandle)
+    const levelHandle = setupLevel(h.game, 1, h.assets)
+    const inputHandler = new InputHandler(h.game, h.renderer, canvasRef.current!, levelHandle)
 
-    handle.inputHandler = inputHandler
-    handle.levelHandle = levelHandle
+    h.inputHandler = inputHandler
+    h.levelHandle = levelHandle
 
-    handle.game.start()
+    h.game.start()
   }, [handleRef, canvasRef])
 
   return (

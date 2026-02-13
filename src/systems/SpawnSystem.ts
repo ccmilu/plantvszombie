@@ -52,25 +52,23 @@ export function createSpawnSystem(game: Game, levelConfig: LevelConfig, waveStat
 
     const group = groups[waveState.groupIndex]
 
-    // 生成计时
+    // 生成计时：首个僵尸立即生成，后续按间隔
     waveState.spawnTimer += dt
-    if (waveState.spawnTimer >= group.interval || waveState.groupSpawned === 0) {
-      if (waveState.groupSpawned === 0 || waveState.spawnTimer >= group.interval) {
+    const shouldSpawn = waveState.groupSpawned === 0 || waveState.spawnTimer >= group.interval
+    if (shouldSpawn) {
+      waveState.spawnTimer = 0
+
+      const row = Math.floor(Math.random() * GRID_ROWS)
+      const zombie = createZombie(group.type, row)
+      world.add(zombie)
+
+      waveState.groupSpawned++
+      waveState.spawnedInWave++
+
+      if (waveState.groupSpawned >= group.count) {
+        waveState.groupIndex++
+        waveState.groupSpawned = 0
         waveState.spawnTimer = 0
-
-        // 随机行
-        const row = Math.floor(Math.random() * GRID_ROWS)
-        const zombie = createZombie(group.type, row)
-        world.add(zombie)
-
-        waveState.groupSpawned++
-        waveState.spawnedInWave++
-
-        if (waveState.groupSpawned >= group.count) {
-          waveState.groupIndex++
-          waveState.groupSpawned = 0
-          waveState.spawnTimer = 0
-        }
       }
     }
   }

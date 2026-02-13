@@ -18,6 +18,7 @@ export interface GameEngineHandle {
 export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
   const [loading, setLoading] = useState(true)
   const [loadProgress, setLoadProgress] = useState(0)
+  const [handle, setHandle] = useState<GameEngineHandle | null>(null)
   const handleRef = useRef<GameEngineHandle | null>(null)
 
   useEffect(() => {
@@ -42,20 +43,20 @@ export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | nul
       // 创建输入处理器
       const inputHandler = new InputHandler(game, renderer, canvas, levelHandle)
 
-      handleRef.current = { game, renderer, eventBus, assets, inputHandler, levelHandle }
+      const h: GameEngineHandle = { game, renderer, eventBus, assets, inputHandler, levelHandle }
+      handleRef.current = h
+      setHandle(h)
 
       eventBus.on('TICK', () => {
-        // 将 InputHandler 的 ghostPlant 传递给 Renderer
         renderer.ghostPlant = inputHandler.ghostPlant
         renderer.render(game.world)
       })
 
       game.start()
-
       setLoading(false)
     })
 
-    // ResizeObserver 监听 canvas 尺寸变化（含首次可见时）
+    // ResizeObserver 监听 canvas 尺寸变化
     const resizeObserver = new ResizeObserver(() => {
       renderer.resize()
     })
@@ -74,5 +75,5 @@ export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | nul
     }
   }, [canvasRef])
 
-  return { loading, loadProgress, handleRef }
+  return { loading, loadProgress, handle, handleRef }
 }
