@@ -6,6 +6,7 @@ export const LEVELS: LevelConfig[] = [
     id: 1,
     name: 'Level 1-1',
     availablePlants: [PlantType.SUNFLOWER, PlantType.PEASHOOTER],
+    newPlants: [PlantType.SUNFLOWER, PlantType.PEASHOOTER],
     initialSun: 50,
     waves: [
       {
@@ -32,6 +33,7 @@ export const LEVELS: LevelConfig[] = [
     id: 2,
     name: 'Level 1-2',
     availablePlants: [PlantType.SUNFLOWER, PlantType.PEASHOOTER, PlantType.WALLNUT, PlantType.SNOW_PEA],
+    newPlants: [PlantType.WALLNUT, PlantType.SNOW_PEA],
     initialSun: 100,
     waves: [
       {
@@ -67,6 +69,7 @@ export const LEVELS: LevelConfig[] = [
     id: 3,
     name: 'Level 1-3',
     availablePlants: [PlantType.SUNFLOWER, PlantType.PEASHOOTER, PlantType.WALLNUT, PlantType.SNOW_PEA, PlantType.CHERRY_BOMB, PlantType.POTATO_MINE],
+    newPlants: [PlantType.CHERRY_BOMB, PlantType.POTATO_MINE],
     initialSun: 150,
     waves: [
       {
@@ -113,6 +116,7 @@ export const LEVELS: LevelConfig[] = [
     id: 4,
     name: 'Level 1-4',
     availablePlants: [PlantType.SUNFLOWER, PlantType.PEASHOOTER, PlantType.WALLNUT, PlantType.SNOW_PEA, PlantType.CHERRY_BOMB, PlantType.POTATO_MINE, PlantType.REPEATER],
+    newPlants: [PlantType.REPEATER],
     initialSun: 200,
     waves: [
       {
@@ -170,6 +174,7 @@ export const LEVELS: LevelConfig[] = [
     id: 5,
     name: 'Level 1-5',
     availablePlants: [PlantType.SUNFLOWER, PlantType.PEASHOOTER, PlantType.WALLNUT, PlantType.SNOW_PEA, PlantType.CHERRY_BOMB, PlantType.POTATO_MINE, PlantType.REPEATER],
+    newPlants: [],
     initialSun: 250,
     waves: [
       {

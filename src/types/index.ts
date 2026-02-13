@@ -140,6 +140,7 @@ export interface LevelConfig {
   availablePlants: PlantType[]
   waves: WaveConfig[]
   initialSun: number
+  newPlants?: PlantType[]
 }
 
 // ---------- System ----------
