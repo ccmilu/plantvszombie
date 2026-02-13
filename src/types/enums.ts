@@ -1,0 +1,46 @@
+export enum GameState {
+  MENU = 'MENU',
+  LEVEL_SELECT = 'LEVEL_SELECT',
+  PLANT_SELECT = 'PLANT_SELECT',
+  PLAYING = 'PLAYING',
+  PAUSED = 'PAUSED',
+  WON = 'WON',
+  LOST = 'LOST',
+}
+
+export enum PlantType {
+  SUNFLOWER = 'SUNFLOWER',
+  PEASHOOTER = 'PEASHOOTER',
+  WALLNUT = 'WALLNUT',
+  SNOW_PEA = 'SNOW_PEA',
+  CHERRY_BOMB = 'CHERRY_BOMB',
+  REPEATER = 'REPEATER',
+  POTATO_MINE = 'POTATO_MINE',
+  CHOMPER = 'CHOMPER',
+}
+
+export enum ZombieType {
+  NORMAL = 'NORMAL',
+  CONEHEAD = 'CONEHEAD',
+  BUCKETHEAD = 'BUCKETHEAD',
+  POLE_VAULTING = 'POLE_VAULTING',
+  NEWSPAPER = 'NEWSPAPER',
+}
+
+export enum EntityType {
+  PLANT = 'PLANT',
+  ZOMBIE = 'ZOMBIE',
+  PROJECTILE = 'PROJECTILE',
+  SUN = 'SUN',
+  EFFECT = 'EFFECT',
+}
+
+export enum ProjectileType {
+  PEA = 'PEA',
+  SNOW_PEA = 'SNOW_PEA',
+}
+
+export enum EffectType {
+  EXPLOSION = 'EXPLOSION',
+  CHOMP = 'CHOMP',
+}

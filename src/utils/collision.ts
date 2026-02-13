@@ -1,0 +1,15 @@
+import type { Transform } from '../types';
+
+export function aabbOverlap(a: Transform, b: Transform): boolean {
+  const aLeft = a.x - a.width / 2;
+  const aRight = a.x + a.width / 2;
+  const aTop = a.y - a.height / 2;
+  const aBottom = a.y + a.height / 2;
+
+  const bLeft = b.x - b.width / 2;
+  const bRight = b.x + b.width / 2;
+  const bTop = b.y - b.height / 2;
+  const bBottom = b.y + b.height / 2;
+
+  return aLeft < bRight && aRight > bLeft && aTop < bBottom && aBottom > bTop;
+}

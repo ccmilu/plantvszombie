@@ -1,0 +1,68 @@
+import { PlantData, PlantType } from '../types';
+
+export const PLANT_DATA: Record<PlantType, PlantData> = {
+  [PlantType.SUNFLOWER]: {
+    type: PlantType.SUNFLOWER,
+    name: '向日葵',
+    cost: 50,
+    cooldown: 7.5,
+    hp: 300,
+    description: '每24秒产生25阳光',
+  },
+  [PlantType.PEASHOOTER]: {
+    type: PlantType.PEASHOOTER,
+    name: '豌豆射手',
+    cost: 100,
+    cooldown: 7.5,
+    hp: 300,
+    description: '每1.4秒发射一颗豌豆',
+  },
+  [PlantType.WALLNUT]: {
+    type: PlantType.WALLNUT,
+    name: '坚果墙',
+    cost: 50,
+    cooldown: 30,
+    hp: 4000,
+    description: '坚固的防御墙',
+  },
+  [PlantType.SNOW_PEA]: {
+    type: PlantType.SNOW_PEA,
+    name: '寒冰射手',
+    cost: 175,
+    cooldown: 7.5,
+    hp: 300,
+    description: '发射冰冻豌豆，减速敌人',
+  },
+  [PlantType.CHERRY_BOMB]: {
+    type: PlantType.CHERRY_BOMB,
+    name: '樱桃炸弹',
+    cost: 150,
+    cooldown: 50,
+    hp: 300,
+    description: '3×3范围爆炸',
+  },
+  [PlantType.REPEATER]: {
+    type: PlantType.REPEATER,
+    name: '双发射手',
+    cost: 200,
+    cooldown: 7.5,
+    hp: 300,
+    description: '每次发射两颗豌豆',
+  },
+  [PlantType.POTATO_MINE]: {
+    type: PlantType.POTATO_MINE,
+    name: '土豆地雷',
+    cost: 25,
+    cooldown: 30,
+    hp: 300,
+    description: '激活后踩中即炸',
+  },
+  [PlantType.CHOMPER]: {
+    type: PlantType.CHOMPER,
+    name: '食人花',
+    cost: 150,
+    cooldown: 7.5,
+    hp: 300,
+    description: '一口吞噬僵尸',
+  },
+};
