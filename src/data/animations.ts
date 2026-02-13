@@ -28,7 +28,7 @@ export const ZOMBIE_WALK_ANIMS: Record<ZombieType, AssetKey[]> = {
   [ZombieType.NORMAL]: ['zombieWalk1', 'zombieWalk2'],
   [ZombieType.CONE]: ['coneZombieWalk'],
   [ZombieType.BUCKET]: ['bucketZombieWalk'],
-  [ZombieType.POLE_VAULT]: ['zombieWalk1'],
+  [ZombieType.POLE_VAULT]: ['screenZombieWalk'],
   [ZombieType.FOOTBALL]: ['footballZombieWalk'],
 }
 
@@ -37,7 +37,7 @@ export const ZOMBIE_ATTACK_ANIMS: Record<ZombieType, AssetKey> = {
   [ZombieType.NORMAL]: 'zombieAttack',
   [ZombieType.CONE]: 'coneZombieAttack',
   [ZombieType.BUCKET]: 'bucketZombieAttack',
-  [ZombieType.POLE_VAULT]: 'zombieAttack',
+  [ZombieType.POLE_VAULT]: 'screenZombieAttack',
   [ZombieType.FOOTBALL]: 'footballZombieAttack',
 }
 
