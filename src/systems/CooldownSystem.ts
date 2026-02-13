@@ -15,20 +15,25 @@ export function createCooldownState(): CooldownState {
 export function createCooldownSystem(game: Game, cooldownState: CooldownState) {
   let emitTimer = 0
 
+  // 追踪上一帧是否还有冷却中的植物，用于检测冷却刚归零的时刻
+  let hadActive = false
+
   return (_world: World, dt: number): void => {
-    let anyChanged = false
+    let anyActive = false
 
     for (const [_key, cd] of cooldownState.cooldowns) {
       if (cd.remaining > 0) {
         cd.remaining -= dt
         if (cd.remaining < 0) cd.remaining = 0
-        anyChanged = true
+        anyActive = true
       }
     }
 
-    // 每0.1秒发送一次冷却更新
+    // 冷却刚归零时（hadActive → !anyActive）强制立即发送一次最终更新
+    const justFinished = hadActive && !anyActive
+
     emitTimer += dt
-    if (emitTimer >= 0.1 && anyChanged) {
+    if ((emitTimer >= 0.1 && anyActive) || justFinished) {
       emitTimer = 0
       const data: Record<string, number> = {}
       for (const [key, cd] of cooldownState.cooldowns) {
@@ -36,5 +41,7 @@ export function createCooldownSystem(game: Game, cooldownState: CooldownState) {
       }
       game.eventBus.emit(GameEvent.COOLDOWN_UPDATE, data)
     }
+
+    hadActive = anyActive
   }
 }
