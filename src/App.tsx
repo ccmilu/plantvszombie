@@ -1,34 +1,47 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { GameScreen } from './ui/screens/GameScreen.tsx'
+
+type Screen = 'menu' | 'game'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [screen, setScreen] = useState<Screen>('menu')
 
+  if (screen === 'game') {
+    return <GameScreen />
+  }
+
+  // 主菜单（后续阶段完善）
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div style={{
+      width: '100vw',
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#2d5a1b',
+      color: '#fff',
+      fontFamily: 'Arial, sans-serif',
+    }}>
+      <h1 style={{ fontSize: '48px', marginBottom: '20px', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+        Plants vs Zombies
+      </h1>
+      <button
+        onClick={() => setScreen('game')}
+        style={{
+          padding: '15px 40px',
+          fontSize: '24px',
+          backgroundColor: '#4caf50',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '10px',
+          cursor: 'pointer',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+        }}
+      >
+        Start Game
+      </button>
+    </div>
   )
 }
 
