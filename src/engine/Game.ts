@@ -25,6 +25,15 @@ export class Game {
 
   constructor(eventBus: EventBus) {
     this.eventBus = eventBus
+
+    // Listen for pause toggle
+    this.eventBus.on(GameEvent.PAUSE_TOGGLED, () => {
+      if (this.state === GameState.PLAYING) {
+        this.setState(GameState.PAUSED)
+      } else if (this.state === GameState.PAUSED) {
+        this.setState(GameState.PLAYING)
+      }
+    })
   }
 
   registerSystem(system: System): void {
