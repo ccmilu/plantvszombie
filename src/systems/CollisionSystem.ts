@@ -1,8 +1,9 @@
+import type { Game } from '../engine/Game.ts'
 import type { World } from '../engine/World.ts'
-import { EntityType, ZombieState } from '../types/enums.ts'
+import { EntityType, ZombieState, GameEvent } from '../types/enums.ts'
 import { LAWN_MOWER_SPEED, LAWN_MOWER_TRIGGER_X, DESIGN_WIDTH } from '../utils/constants.ts'
 
-export function createCollisionSystem() {
+export function createCollisionSystem(game: Game) {
   return (world: World, _dt: number): void => {
     const projectiles = world.byType(EntityType.PROJECTILE)
     const zombies = world.byType(EntityType.ZOMBIE)
@@ -57,6 +58,7 @@ export function createCollisionSystem() {
           }
 
           // 销毁子弹
+          game.eventBus.emit(GameEvent.PROJECTILE_HIT)
           proj.destroy()
           break
         }
@@ -114,6 +116,7 @@ export function createCollisionSystem() {
 
         if (zt.x <= mt.x + LAWN_MOWER_TRIGGER_X) {
           // 激活割草机
+          game.eventBus.emit(GameEvent.LAWN_MOWER_ACTIVATED)
           mower.add('movement', { speed: LAWN_MOWER_SPEED, baseSpeed: LAWN_MOWER_SPEED, dx: 1 })
           break
         }

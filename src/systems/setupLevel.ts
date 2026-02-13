@@ -19,6 +19,7 @@ import { createAnimationSystem } from './AnimationSystem.ts'
 import { createCooldownSystem, createCooldownState, type CooldownState } from './CooldownSystem.ts'
 import { createCleanupSystem } from './CleanupSystem.ts'
 import { createEffectSystem } from './EffectSystem.ts'
+import { createSoundBridge } from '../audio/SoundBridge.ts'
 
 export interface LevelHandle {
   cooldownState: CooldownState
@@ -66,10 +67,10 @@ export function setupLevel(game: Game, levelId: number, assets: LoadedAssets, se
   game.registerSystem(createSpawnSystem(game, levelConfig, waveState))
   game.registerSystem(createWaveSystem(game, waveState))
   game.registerSystem(createPlantBehaviorSystem(game))
-  game.registerSystem(createZombieBehaviorSystem())
+  game.registerSystem(createZombieBehaviorSystem(game))
   game.registerSystem(createProjectileSystem())
   game.registerSystem(createMovementSystem())
-  game.registerSystem(createCollisionSystem())
+  game.registerSystem(createCollisionSystem(game))
   game.registerSystem(createCombatSystem(game))
   game.registerSystem(createSunSystem(game))
   game.registerSystem(createEffectSystem())
@@ -122,6 +123,9 @@ export function setupLevel(game: Game, levelId: number, assets: LoadedAssets, se
   game.eventBus.on(GameEvent.COLLECT_SUN, onCollectSun as (...args: unknown[]) => void)
   game.eventBus.on(GameEvent.PLANT_REMOVED, onPlantRemoved as (...args: unknown[]) => void)
 
+  // 初始化音效桥接
+  const destroySoundBridge = createSoundBridge(game.eventBus)
+
   // 启动游戏
   game.setState(GameState.PLAYING)
   game.eventBus.emit(GameEvent.SUN_CHANGED, game.sun)
@@ -130,6 +134,7 @@ export function setupLevel(game: Game, levelId: number, assets: LoadedAssets, se
     game.eventBus.off(GameEvent.PLACE_PLANT, onPlacePlant as (...args: unknown[]) => void)
     game.eventBus.off(GameEvent.COLLECT_SUN, onCollectSun as (...args: unknown[]) => void)
     game.eventBus.off(GameEvent.PLANT_REMOVED, onPlantRemoved as (...args: unknown[]) => void)
+    destroySoundBridge()
   }
 
   return { cooldownState, grid, selectedPlants: plants, destroy }

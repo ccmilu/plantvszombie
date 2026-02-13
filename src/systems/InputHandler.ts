@@ -92,6 +92,7 @@ export class InputHandler {
           if (gp && gp.row === gridPos.row && gp.col === gridPos.col) {
             plant.alive = false
             this.game.eventBus.emit(GameEvent.PLANT_REMOVED, gridPos.row, gridPos.col)
+            this.game.eventBus.emit(GameEvent.SHOVEL_USED)
             break
           }
         }

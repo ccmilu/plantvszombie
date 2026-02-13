@@ -34,6 +34,7 @@ export function createCombatSystem(game: Game) {
 
       if (health.current <= 0 && health.armor <= 0) {
         zd.state = ZombieState.DYING
+        game.eventBus.emit(GameEvent.ZOMBIE_DIED)
         const dieKey = ZOMBIE_DIE_ANIMS[zd.zombieType]
         anim.key = dieKey
         anim.frameIndex = 0

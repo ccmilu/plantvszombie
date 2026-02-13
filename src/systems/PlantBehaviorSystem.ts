@@ -40,6 +40,7 @@ export function createPlantBehaviorSystem(game: Game) {
             plantData.actionTimer = 0
             const sun = createPlantSun(transform.x, transform.y)
             world.add(sun)
+            game.eventBus.emit(GameEvent.SUN_PRODUCED)
           }
           break
         }
@@ -57,6 +58,7 @@ export function createPlantBehaviorSystem(game: Game) {
                 20,
               )
               world.add(pea)
+              game.eventBus.emit(GameEvent.PROJECTILE_FIRED)
             }
           }
           break
@@ -102,6 +104,7 @@ export function createPlantBehaviorSystem(game: Game) {
                 20,
               )
               world.add(snowPea)
+              game.eventBus.emit(GameEvent.PROJECTILE_FIRED)
             }
           }
           break
@@ -139,6 +142,7 @@ export function createPlantBehaviorSystem(game: Game) {
               // 创建爆炸特效
               const effect = createExplosionEffect(transform.x, transform.y, 'boom')
               world.add(effect)
+              game.eventBus.emit(GameEvent.EXPLOSION)
 
               // 释放网格并自毁
               game.eventBus.emit(GameEvent.PLANT_REMOVED, gridPos.row, gridPos.col)
@@ -162,6 +166,7 @@ export function createPlantBehaviorSystem(game: Game) {
                 20,
               )
               world.add(pea1)
+              game.eventBus.emit(GameEvent.PROJECTILE_FIRED)
 
               // 第二颗豌豆延迟发射
               pendingPeas.push({
@@ -236,6 +241,7 @@ export function createPlantBehaviorSystem(game: Game) {
                 // 创建爆炸特效
                 const effect = createExplosionEffect(transform.x, transform.y, 'boom')
                 world.add(effect)
+                game.eventBus.emit(GameEvent.EXPLOSION)
 
                 // 释放网格并自毁
                 game.eventBus.emit(GameEvent.PLANT_REMOVED, gridPos.row, gridPos.col)

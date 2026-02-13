@@ -1,5 +1,6 @@
+import type { Game } from '../engine/Game.ts'
 import type { World } from '../engine/World.ts'
-import { EntityType, ZombieState, ZombieType } from '../types/enums.ts'
+import { EntityType, ZombieState, ZombieType, GameEvent } from '../types/enums.ts'
 import { ZOMBIE_DYING_DURATION, CELL_WIDTH } from '../utils/constants.ts'
 import { ZOMBIE_ATTACK_ANIMS, ZOMBIE_WALK_ANIMS } from '../data/animations.ts'
 import type { AssetKey } from '../renderer/assets/AssetMap.ts'
@@ -7,7 +8,7 @@ import type { AssetKey } from '../renderer/assets/AssetMap.ts'
 /** 撑杆僵尸跳跃后的降速 */
 const POLE_VAULT_POST_JUMP_SPEED = 15
 
-export function createZombieBehaviorSystem() {
+export function createZombieBehaviorSystem(game: Game) {
   return (world: World, dt: number): void => {
     const zombies = world.byType(EntityType.ZOMBIE)
     const plants = world.byType(EntityType.PLANT)
@@ -62,6 +63,7 @@ export function createZombieBehaviorSystem() {
 
           // 只在还使用护甲版动画时切换
           if (armoredWalkAnims.includes(currentKey) || currentKey === armoredAttackAnim) {
+            game.eventBus.emit(GameEvent.ARMOR_BREAK)
             if (zd.state === ZombieState.ATTACKING) {
               anim.key = normalAttackAnim
             } else {
@@ -96,6 +98,7 @@ export function createZombieBehaviorSystem() {
         // 撑杆僵尸跳跃逻辑
         if (zd.zombieType === ZombieType.POLE_VAULT && !zd.hasJumped) {
           zd.hasJumped = true
+          game.eventBus.emit(GameEvent.POLE_VAULT_JUMP)
           const pt = targetPlant.get('transform')
           if (pt) {
             // 跳到植物后方一个格子宽度
@@ -117,6 +120,7 @@ export function createZombieBehaviorSystem() {
         // 切换到攻击状态
         if (zd.state !== ZombieState.ATTACKING) {
           zd.state = ZombieState.ATTACKING
+          game.eventBus.emit(GameEvent.ZOMBIE_BITE)
           // 使用正确的攻击动画（考虑护甲掉落）
           let attackKey: AssetKey
           if (health && health.maxArmor > 0 && health.armor <= 0 &&
