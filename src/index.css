@@ -13,3 +13,34 @@ html, body, #root {
 body {
   background-color: #000;
 }
+
+/* 防止浏览器手势干扰游戏 canvas */
+canvas {
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 去除移动端按钮触摸高亮 */
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 旋转提示动画 */
+@keyframes rotate-hint {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(90deg);
+  }
+  50% {
+    transform: rotate(90deg);
+  }
+  75% {
+    transform: rotate(0deg);
+  }
+}
+
+.rotate-hint-icon {
+  animation: rotate-hint 2.5s ease-in-out infinite;
+}

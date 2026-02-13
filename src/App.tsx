@@ -3,6 +3,7 @@ import { GameScreen } from './ui/screens/GameScreen.tsx'
 import { MainMenu } from './ui/screens/MainMenu.tsx'
 import { LevelSelect } from './ui/screens/LevelSelect.tsx'
 import { AudioManager } from './audio/AudioManager.ts'
+import { RotatePrompt } from './ui/components/RotatePrompt.tsx'
 import type { PlantType } from './types/enums.ts'
 
 type Screen =
@@ -50,8 +51,9 @@ function App() {
     setScreen({ type: 'game', levelId, selectedPlants })
   }, [])
 
+  let content
   if (screen.type === 'game') {
-    return (
+    content = (
       <GameScreen
         levelId={screen.levelId}
         selectedPlants={screen.selectedPlants}
@@ -61,10 +63,8 @@ function App() {
         }}
       />
     )
-  }
-
-  if (screen.type === 'level_select') {
-    return (
+  } else if (screen.type === 'level_select') {
+    content = (
       <LevelSelect
         onBack={goToMenu}
         onSelectLevel={(levelId) => {
@@ -73,9 +73,16 @@ function App() {
         }}
       />
     )
+  } else {
+    content = <MainMenu onPlay={goToLevelSelect} />
   }
 
-  return <MainMenu onPlay={goToLevelSelect} />
+  return (
+    <>
+      {content}
+      <RotatePrompt />
+    </>
+  )
 }
 
 export default App
