@@ -18,7 +18,7 @@ export function createCooldownSystem(game: Game, cooldownState: CooldownState) {
   return (_world: World, dt: number): void => {
     let anyChanged = false
 
-    for (const [key, cd] of cooldownState.cooldowns) {
+    for (const [_key, cd] of cooldownState.cooldowns) {
       if (cd.remaining > 0) {
         cd.remaining -= dt
         if (cd.remaining < 0) cd.remaining = 0

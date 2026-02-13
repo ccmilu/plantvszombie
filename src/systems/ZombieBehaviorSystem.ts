@@ -1,7 +1,7 @@
 import type { World } from '../engine/World.ts'
 import { EntityType, ZombieState, ZombieType } from '../types/enums.ts'
 import { ZOMBIE_DYING_DURATION, CELL_WIDTH } from '../utils/constants.ts'
-import { ZOMBIE_ATTACK_ANIMS, ZOMBIE_DIE_ANIMS, ZOMBIE_WALK_ANIMS } from '../data/animations.ts'
+import { ZOMBIE_ATTACK_ANIMS, ZOMBIE_WALK_ANIMS } from '../data/animations.ts'
 import type { AssetKey } from '../renderer/assets/AssetMap.ts'
 
 /** 撑杆僵尸跳跃后的降速 */
