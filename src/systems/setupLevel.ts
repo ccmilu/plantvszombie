@@ -24,9 +24,13 @@ export interface LevelHandle {
   cooldownState: CooldownState
   /** 网格占用表 [row][col] */
   grid: (boolean)[][]
+  /** 玩家选择的植物列表 */
+  selectedPlants: PlantType[]
+  /** 清理事件监听器 */
+  destroy: () => void
 }
 
-export function setupLevel(game: Game, levelId: number, assets: LoadedAssets): LevelHandle {
+export function setupLevel(game: Game, levelId: number, assets: LoadedAssets, selectedPlants?: PlantType[]): LevelHandle {
   const levelConfig = LEVELS.find(l => l.id === levelId)
   if (!levelConfig) throw new Error(`Level ${levelId} not found`)
 
@@ -34,6 +38,11 @@ export function setupLevel(game: Game, levelId: number, assets: LoadedAssets): L
   game.reset()
   game.sun = levelConfig.initialSun
   game.currentLevel = levelId
+
+  // 使用玩家选择的植物，否则使用关卡默认配置
+  const plants = selectedPlants && selectedPlants.length > 0
+    ? selectedPlants
+    : levelConfig.availablePlants
 
   // 初始化网格占用表
   const grid: boolean[][] = []
@@ -117,5 +126,11 @@ export function setupLevel(game: Game, levelId: number, assets: LoadedAssets): L
   game.setState(GameState.PLAYING)
   game.eventBus.emit(GameEvent.SUN_CHANGED, game.sun)
 
-  return { cooldownState, grid }
+  const destroy = () => {
+    game.eventBus.off(GameEvent.PLACE_PLANT, onPlacePlant as (...args: unknown[]) => void)
+    game.eventBus.off(GameEvent.COLLECT_SUN, onCollectSun as (...args: unknown[]) => void)
+    game.eventBus.off(GameEvent.PLANT_REMOVED, onPlantRemoved as (...args: unknown[]) => void)
+  }
+
+  return { cooldownState, grid, selectedPlants: plants, destroy }
 }

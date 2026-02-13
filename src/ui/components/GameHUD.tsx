@@ -12,10 +12,14 @@ interface GameHUDProps {
   cooldowns: Record<string, number>
   availablePlants: PlantType[]
   eventBus: EventBus | null
+  waveProgress: { current: number; total: number }
+  levelId: number
   onRestart: () => void
+  onBackToMenu: () => void
+  onNextLevel: () => void
 }
 
-export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, onRestart }: GameHUDProps) {
+export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, onRestart, onBackToMenu, onNextLevel, levelId, waveProgress }: GameHUDProps) {
   const [selectedPlant, setSelectedPlant] = useState<PlantType | null>(null)
 
   const handleSelectPlant = useCallback((plantType: PlantType) => {
@@ -45,7 +49,13 @@ export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, 
         selectedPlant={selectedPlant}
         onSelectPlant={handleSelectPlant}
       />
-      <GameOverModal gameState={gameState} onRestart={onRestart} />
+      <GameOverModal
+        gameState={gameState}
+        levelId={levelId}
+        onRestart={onRestart}
+        onBackToMenu={onBackToMenu}
+        onNextLevel={onNextLevel}
+      />
     </>
   )
 }

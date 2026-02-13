@@ -1,12 +1,33 @@
 import { GameState } from '../../types/enums.ts'
+import { LEVELS } from '../../data/levels.ts'
+import { saveManager } from '../../save/SaveManager.ts'
+import { useEffect, useRef } from 'react'
 
 interface GameOverModalProps {
   gameState: GameState
+  levelId: number
   onRestart: () => void
+  onBackToMenu: () => void
+  onNextLevel: () => void
 }
 
-export function GameOverModal({ gameState, onRestart }: GameOverModalProps) {
+export function GameOverModal({ gameState, levelId, onRestart, onBackToMenu, onNextLevel }: GameOverModalProps) {
+  const savedRef = useRef(false)
+
+  // Save progress when player wins
+  useEffect(() => {
+    if (gameState === GameState.WON && !savedRef.current) {
+      savedRef.current = true
+      saveManager.completeLevel(levelId)
+    }
+    if (gameState === GameState.PLAYING) {
+      savedRef.current = false
+    }
+  }, [gameState, levelId])
+
   if (gameState !== GameState.WON && gameState !== GameState.LOST) return null
+
+  const isLastLevel = levelId >= LEVELS.length
 
   return (
     <div style={{
@@ -45,22 +66,62 @@ export function GameOverModal({ gameState, onRestart }: GameOverModalProps) {
         />
       )}
 
-      <button
-        onClick={onRestart}
-        style={{
-          padding: '12px 40px',
-          fontSize: '20px',
-          fontWeight: 'bold',
-          backgroundColor: '#4caf50',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '8px',
-          cursor: 'pointer',
-          textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
-        }}
-      >
-        Play Again
-      </button>
+      <div style={{ display: 'flex', gap: '12px' }}>
+        {gameState === GameState.WON && !isLastLevel && (
+          <button
+            onClick={onNextLevel}
+            style={{
+              padding: '12px 30px',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              backgroundColor: '#4caf50',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
+            }}
+          >
+            Next Level
+          </button>
+        )}
+
+        {gameState === GameState.LOST && (
+          <button
+            onClick={onRestart}
+            style={{
+              padding: '12px 30px',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              backgroundColor: '#e67e22',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
+            }}
+          >
+            Try Again
+          </button>
+        )}
+
+        <button
+          onClick={onBackToMenu}
+          style={{
+            padding: '12px 30px',
+            fontSize: '18px',
+            fontWeight: 'bold',
+            backgroundColor: '#666',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
+          }}
+        >
+          Level Select
+        </button>
+      </div>
     </div>
   )
 }

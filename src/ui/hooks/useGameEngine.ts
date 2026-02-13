@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { Game } from '../../engine/Game.ts'
 import { EventBus } from '../../engine/events/EventBus.ts'
 import { Renderer } from '../../renderer/Renderer.ts'
 import { loadAllAssets, type LoadedAssets } from '../../renderer/assets/AssetLoader.ts'
 import { setupLevel, type LevelHandle } from '../../systems/setupLevel.ts'
 import { InputHandler } from '../../systems/InputHandler.ts'
+import type { PlantType } from '../../types/enums.ts'
 
 export interface GameEngineHandle {
   game: Game
@@ -15,7 +16,7 @@ export interface GameEngineHandle {
   levelHandle: LevelHandle | null
 }
 
-export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
+export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | null>, levelId: number) {
   const [loading, setLoading] = useState(true)
   const [loadProgress, setLoadProgress] = useState(0)
   const [handle, setHandle] = useState<GameEngineHandle | null>(null)
@@ -37,29 +38,24 @@ export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | nul
 
       renderer.init(assets)
 
-      // 设置关卡
-      const levelHandle = setupLevel(game, 1, assets)
-
-      // 创建输入处理器
-      const inputHandler = new InputHandler(game, renderer, canvas, levelHandle)
-
-      const h: GameEngineHandle = { game, renderer, eventBus, assets, inputHandler, levelHandle }
+      const h: GameEngineHandle = { game, renderer, eventBus, assets, inputHandler: null, levelHandle: null }
       handleRef.current = h
       setHandle(h)
 
-      // 暴露到 window 供调试/测试
+      // Expose for debugging/testing
       ;(window as any).__pvz = h
 
       eventBus.on('TICK', () => {
-        renderer.ghostPlant = inputHandler.ghostPlant
+        renderer.ghostPlant = h.inputHandler?.ghostPlant ?? null
         renderer.render(game.world)
       })
 
+      // Start RAF loop for rendering (background), but don't start level yet
       game.start()
       setLoading(false)
     })
 
-    // ResizeObserver 监听 canvas 尺寸变化
+    // ResizeObserver to watch canvas size changes
     const resizeObserver = new ResizeObserver(() => {
       renderer.resize()
     })
@@ -71,12 +67,48 @@ export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | nul
       if (handleRef.current?.inputHandler) {
         handleRef.current.inputHandler.destroy()
       }
+      if (handleRef.current?.levelHandle) {
+        handleRef.current.levelHandle.destroy()
+      }
       game.destroy()
       renderer.destroy()
       eventBus.clear()
       handleRef.current = null
     }
-  }, [canvasRef])
+  }, [canvasRef, levelId])
 
-  return { loading, loadProgress, handle, handleRef }
+  const startLevel = useCallback((selectedPlants: PlantType[]) => {
+    const h = handleRef.current
+    if (!h) return
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    // Clean up previous level if any
+    h.inputHandler?.destroy()
+    h.levelHandle?.destroy()
+
+    const levelHandle = setupLevel(h.game, levelId, h.assets, selectedPlants)
+    const inputHandler = new InputHandler(h.game, h.renderer, canvas, levelHandle)
+
+    h.inputHandler = inputHandler
+    h.levelHandle = levelHandle
+  }, [canvasRef, levelId])
+
+  const restartLevel = useCallback((selectedPlants: PlantType[]) => {
+    const h = handleRef.current
+    if (!h) return
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    h.inputHandler?.destroy()
+    h.levelHandle?.destroy()
+
+    const levelHandle = setupLevel(h.game, levelId, h.assets, selectedPlants)
+    const inputHandler = new InputHandler(h.game, h.renderer, canvas, levelHandle)
+
+    h.inputHandler = inputHandler
+    h.levelHandle = levelHandle
+  }, [canvasRef, levelId])
+
+  return { loading, loadProgress, handle, handleRef, startLevel, restartLevel }
 }

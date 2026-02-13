@@ -1,58 +1,69 @@
-import { useRef, useCallback } from 'react'
+import { useRef, useState, useCallback } from 'react'
 import { useGameEngine } from '../hooks/useGameEngine.ts'
 import { useGameState } from '../hooks/useGameState.ts'
 import { useCameraTransform } from '../hooks/useCameraTransform.ts'
 import { GameHUD } from '../components/GameHUD.tsx'
+import { PlantSelectOverlay } from '../components/PlantSelectOverlay.tsx'
 import { LEVELS } from '../../data/levels.ts'
-import { setupLevel } from '../../systems/setupLevel.ts'
-import { InputHandler } from '../../systems/InputHandler.ts'
+import { saveManager } from '../../save/SaveManager.ts'
+import type { PlantType } from '../../types/enums.ts'
 
-export function GameScreen() {
-  const containerRef = useRef<HTMLDivElement>(null)
+type GamePhase = 'plant_select' | 'playing' | 'paused' | 'result'
+
+interface GameScreenProps {
+  levelId: number
+  selectedPlants: PlantType[]
+  onBackToMenu: () => void
+  onNextLevel: (nextLevelId: number, selectedPlants: PlantType[]) => void
+}
+
+export function GameScreen({ levelId, onBackToMenu, onNextLevel }: GameScreenProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [phase, setPhase] = useState<GamePhase>('plant_select')
+  const [activePlants, setActivePlants] = useState<PlantType[]>([])
 
-  const { loading, loadProgress, handle, handleRef } = useGameEngine(canvasRef)
+  const { loading, loadProgress, handle, startLevel, restartLevel } = useGameEngine(canvasRef, levelId)
 
   const eventBus = handle?.eventBus ?? null
   const renderer = handle?.renderer ?? null
-  const { sun, gameState, cooldowns } = useGameState(eventBus)
+  const { sun, gameState, cooldowns, waveProgress } = useGameState(eventBus)
   const overlayStyle = useCameraTransform(renderer, canvasRef)
 
-  const currentLevel = handle?.game?.currentLevel ?? 1
-  const levelConfig = LEVELS.find(l => l.id === currentLevel)
-  const availablePlants = levelConfig?.availablePlants ?? LEVELS[0]?.availablePlants ?? []
+  const levelConfig = LEVELS.find(l => l.id === levelId)
+  const levelName = levelConfig?.name ?? `Level ${levelId}`
+  const unlockedPlants = saveManager.getUnlockedPlants()
+
+  const handleStartPlaying = useCallback((selected: PlantType[]) => {
+    setActivePlants(selected)
+    startLevel(selected)
+    setPhase('playing')
+  }, [startLevel])
 
   const handleRestart = useCallback(() => {
-    const h = handleRef.current
-    if (!h) return
+    restartLevel(activePlants)
+    setPhase('playing')
+  }, [restartLevel, activePlants])
 
-    // 销毁旧的输入处理器
-    h.inputHandler?.destroy()
-
-    // 重新设置关卡
-    const levelHandle = setupLevel(h.game, 1, h.assets)
-    const inputHandler = new InputHandler(h.game, h.renderer, canvasRef.current!, levelHandle)
-
-    h.inputHandler = inputHandler
-    h.levelHandle = levelHandle
-
-    h.game.start()
-  }, [handleRef, canvasRef])
+  const handleNextLevel = useCallback(() => {
+    const nextId = levelId + 1
+    if (nextId <= LEVELS.length) {
+      onNextLevel(nextId, [])
+    } else {
+      onBackToMenu()
+    }
+  }, [levelId, onNextLevel, onBackToMenu])
 
   return (
-    <div
-      ref={containerRef}
-      style={{
-        width: '100vw',
-        height: '100vh',
-        backgroundColor: '#000',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden',
-        position: 'relative',
-      }}
-    >
+    <div style={{
+      width: '100vw',
+      height: '100vh',
+      backgroundColor: '#000',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+      position: 'relative',
+    }}>
       <canvas
         ref={canvasRef}
         style={{
@@ -62,17 +73,32 @@ export function GameScreen() {
         }}
       />
 
-      {/* UI Overlay - 使用 camera transform 对齐 canvas */}
+      {/* UI Overlay */}
       {!loading && (
         <div style={overlayStyle}>
-          <GameHUD
-            sun={sun}
-            gameState={gameState}
-            cooldowns={cooldowns}
-            availablePlants={availablePlants}
-            eventBus={eventBus}
-            onRestart={handleRestart}
-          />
+          {phase !== 'plant_select' && (
+            <GameHUD
+              sun={sun}
+              gameState={gameState}
+              cooldowns={cooldowns}
+              availablePlants={activePlants}
+              eventBus={eventBus}
+              waveProgress={waveProgress}
+              levelId={levelId}
+              onRestart={handleRestart}
+              onBackToMenu={onBackToMenu}
+              onNextLevel={handleNextLevel}
+            />
+          )}
+
+          {phase === 'plant_select' && (
+            <PlantSelectOverlay
+              levelName={levelName}
+              unlockedPlants={unlockedPlants}
+              onStart={handleStartPlaying}
+              onBack={onBackToMenu}
+            />
+          )}
         </div>
       )}
 
