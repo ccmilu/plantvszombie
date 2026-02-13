@@ -8,7 +8,7 @@ export const PLANT_CONFIGS: Record<PlantType, PlantConfig> = {
     cost: 50,
     hp: 300,
     cooldown: 7.5,
-    attackInterval: 24,
+    attackInterval: 18,
     damage: 0,
     range: 0,
     description: 'Produces sun for you.',
