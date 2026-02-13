@@ -47,6 +47,15 @@ export function createCollisionSystem() {
             }
           }
 
+          // 冰豌豆减速效果
+          if (pd.slow && pd.slowDuration > 0) {
+            zd.slowTimer = pd.slowDuration
+            const zm = zombie.get('movement')
+            if (zm) {
+              zm.speed = zm.baseSpeed * 0.5
+            }
+          }
+
           // 销毁子弹
           proj.destroy()
           break

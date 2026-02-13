@@ -80,3 +80,15 @@ export const ZOMBIE_DYING_DURATION = 1.5 // 秒
 
 // 割草机触发阈值
 export const LAWN_MOWER_TRIGGER_X = 50
+
+// 土豆地雷激活时间
+export const POTATO_MINE_ARM_TIME = 15 // 秒
+
+// 樱桃炸弹引爆延迟
+export const CHERRY_BOMB_DELAY = 1.0 // 秒
+
+// 樱桃炸弹爆炸特效持续时间
+export const CHERRY_BOMB_EFFECT_DURATION = 0.8 // 秒
+
+// 双发射手第二颗子弹延迟
+export const REPEATER_SECOND_PEA_DELAY = 0.15 // 秒

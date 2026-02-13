@@ -14,6 +14,7 @@ import {
   ZOMBIE_HEAD_WIDTH, ZOMBIE_HEAD_HEIGHT, ZOMBIE_HEAD_DURATION,
   ZOMBIE_SPAWN_X, SUN_VALUE, SUN_LIFETIME,
   DESIGN_WIDTH, DEFAULT_FRAME_DURATION,
+  CHERRY_BOMB_EFFECT_DURATION,
 } from '../utils/constants.ts'
 
 export function createPlant(plantType: PlantType, row: number, col: number): Entity {
@@ -138,6 +139,43 @@ export function createZombieHead(x: number, y: number): Entity {
   entity.add('effectData', { duration: ZOMBIE_HEAD_DURATION, elapsed: 0 })
   entity.add('animation', {
     key: 'zombieHead',
+    frameIndex: 0,
+    frameTimer: 0,
+    frameDuration: DEFAULT_FRAME_DURATION,
+  })
+
+  return entity
+}
+
+/** 创建冰豌豆子弹 */
+export function createSnowProjectile(x: number, y: number, row: number, damage: number): Entity {
+  const entity = new Entity(EntityType.PROJECTILE)
+  entity.add('transform', { x, y, width: PEA_WIDTH, height: PEA_HEIGHT })
+  entity.add('gridPosition', { row, col: -1 })
+  entity.add('movement', { speed: PEA_SPEED, baseSpeed: PEA_SPEED, dx: 1 })
+  entity.add('projectileData', {
+    projectileType: 'SNOW_PEA',
+    damage,
+    slow: true,
+    slowDuration: 3,
+  })
+  entity.add('animation', {
+    key: 'peaSnow',
+    frameIndex: 0,
+    frameTimer: 0,
+    frameDuration: DEFAULT_FRAME_DURATION,
+  })
+
+  return entity
+}
+
+/** 创建爆炸特效（樱桃炸弹/土豆地雷） */
+export function createExplosionEffect(x: number, y: number, animKey: string = 'boom'): Entity {
+  const entity = new Entity(EntityType.EFFECT)
+  entity.add('transform', { x, y, width: 100, height: 100 })
+  entity.add('effectData', { duration: CHERRY_BOMB_EFFECT_DURATION, elapsed: 0 })
+  entity.add('animation', {
+    key: animKey,
     frameIndex: 0,
     frameTimer: 0,
     frameDuration: DEFAULT_FRAME_DURATION,
