@@ -78,5 +78,9 @@ export const GameEvent = {
   REMOVE_PLANT: 'REMOVE_PLANT',
   PAUSE_TOGGLED: 'PAUSE_TOGGLED',
   START_LEVEL: 'START_LEVEL',
+
+  // Plant selection
+  SELECT_PLANT: 'SELECT_PLANT',
+  DESELECT_PLANT: 'DESELECT_PLANT',
 } as const
 export type GameEvent = (typeof GameEvent)[keyof typeof GameEvent]

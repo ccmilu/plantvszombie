@@ -39,3 +39,44 @@ export const FIXED_DT = 1 / 60
 
 // 动画默认帧间隔
 export const DEFAULT_FRAME_DURATION = 0.1 // 秒
+
+// 豌豆子弹速度
+export const PEA_SPEED = 300 // 像素/秒
+
+// 植物尺寸（相对于格子）
+export const PLANT_WIDTH = 70
+export const PLANT_HEIGHT = 80
+
+// 僵尸尺寸
+export const ZOMBIE_WIDTH = 56
+export const ZOMBIE_HEIGHT = 100
+
+// 子弹尺寸
+export const PEA_WIDTH = 20
+export const PEA_HEIGHT = 20
+
+// 阳光尺寸
+export const SUN_WIDTH = 45
+export const SUN_HEIGHT = 45
+
+// 割草机尺寸
+export const LAWN_MOWER_WIDTH = 56
+export const LAWN_MOWER_HEIGHT = 56
+
+// 阳光收集飞向的目标位置（左上角阳光计数器）
+export const SUN_COLLECT_TARGET_X = 45
+export const SUN_COLLECT_TARGET_Y = 40
+
+// 阳光飞行速度
+export const SUN_COLLECT_SPEED = 400 // 像素/秒
+
+// 僵尸头部特效尺寸和持续时间
+export const ZOMBIE_HEAD_WIDTH = 40
+export const ZOMBIE_HEAD_HEIGHT = 40
+export const ZOMBIE_HEAD_DURATION = 1.5 // 秒
+
+// 僵尸死亡动画持续时间
+export const ZOMBIE_DYING_DURATION = 1.5 // 秒
+
+// 割草机触发阈值
+export const LAWN_MOWER_TRIGGER_X = 50

@@ -6,6 +6,15 @@ import { DESIGN_WIDTH, DESIGN_HEIGHT } from '../utils/constants.ts'
 import type { LoadedAssets } from './assets/AssetLoader.ts'
 import type { World } from '../engine/World.ts'
 
+export interface GhostPlantInfo {
+  key: string
+  x: number
+  y: number
+  width: number
+  height: number
+  valid: boolean
+}
+
 export class Renderer {
   private canvas: HTMLCanvasElement
   private ctx: CanvasRenderingContext2D
@@ -14,6 +23,9 @@ export class Renderer {
   private entityLayer = new EntityLayer()
   private effectLayer = new EffectLayer()
   private ready = false
+
+  /** 当前的幽灵植物（放置预览） */
+  ghostPlant: GhostPlantInfo | null = null
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas
@@ -60,6 +72,11 @@ export class Renderer {
     this.backgroundLayer.render(ctx)
     this.entityLayer.render(ctx, world)
     this.effectLayer.render(ctx, world)
+
+    // 渲染幽灵植物（半透明预览）
+    if (this.ghostPlant) {
+      this.entityLayer.renderGhost(ctx, this.ghostPlant)
+    }
 
     ctx.restore()
   }

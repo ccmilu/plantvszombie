@@ -3,13 +3,16 @@ import { Game } from '../../engine/Game.ts'
 import { EventBus } from '../../engine/events/EventBus.ts'
 import { Renderer } from '../../renderer/Renderer.ts'
 import { loadAllAssets, type LoadedAssets } from '../../renderer/assets/AssetLoader.ts'
-import { GameState } from '../../types/enums.ts'
+import { setupLevel, type LevelHandle } from '../../systems/setupLevel.ts'
+import { InputHandler } from '../../systems/InputHandler.ts'
 
 export interface GameEngineHandle {
   game: Game
   renderer: Renderer
   eventBus: EventBus
   assets: LoadedAssets
+  inputHandler: InputHandler | null
+  levelHandle: LevelHandle | null
 }
 
 export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
@@ -32,13 +35,21 @@ export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | nul
       if (destroyed) return
 
       renderer.init(assets)
-      handleRef.current = { game, renderer, eventBus, assets }
+
+      // 设置关卡
+      const levelHandle = setupLevel(game, 1, assets)
+
+      // 创建输入处理器
+      const inputHandler = new InputHandler(game, renderer, canvas, levelHandle)
+
+      handleRef.current = { game, renderer, eventBus, assets, inputHandler, levelHandle }
 
       eventBus.on('TICK', () => {
+        // 将 InputHandler 的 ghostPlant 传递给 Renderer
+        renderer.ghostPlant = inputHandler.ghostPlant
         renderer.render(game.world)
       })
 
-      game.setState(GameState.PLAYING)
       game.start()
 
       setLoading(false)
@@ -53,6 +64,9 @@ export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | nul
     return () => {
       destroyed = true
       resizeObserver.disconnect()
+      if (handleRef.current?.inputHandler) {
+        handleRef.current.inputHandler.destroy()
+      }
       game.destroy()
       renderer.destroy()
       eventBus.clear()

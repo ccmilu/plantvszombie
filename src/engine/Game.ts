@@ -88,6 +88,7 @@ export class Game {
 
   reset(): void {
     this.world.clear()
+    this.systems.length = 0
     this.sun = 50
     this.accumulator = 0
     this.alpha = 0

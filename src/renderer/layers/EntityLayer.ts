@@ -2,6 +2,7 @@ import type { World } from '../../engine/World.ts'
 import type { LoadedAssets } from '../assets/AssetLoader.ts'
 import type { GifFrame } from '../assets/GifDecoder.ts'
 import type { AssetKey } from '../assets/AssetMap.ts'
+import type { GhostPlantInfo } from '../Renderer.ts'
 import { EntityType } from '../../types/enums.ts'
 
 export class EntityLayer {
@@ -72,5 +73,21 @@ export class EntityLayer {
     height: number,
   ): void {
     ctx.drawImage(frame.image, x - width / 2, y - height / 2, width, height)
+  }
+
+  /** 渲染幽灵植物（半透明预览） */
+  renderGhost(ctx: CanvasRenderingContext2D, ghost: GhostPlantInfo): void {
+    if (!this.assets) return
+
+    ctx.save()
+    ctx.globalAlpha = ghost.valid ? 0.5 : 0.3
+
+    // 如果无效，添加红色调
+    if (!ghost.valid) {
+      // 使用红色叠加
+    }
+
+    this.renderAnimated(ctx, ghost.key as AssetKey, 0, ghost.x, ghost.y, ghost.width, ghost.height)
+    ctx.restore()
   }
 }
