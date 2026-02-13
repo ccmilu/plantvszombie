@@ -21,8 +21,15 @@ interface GameHUDProps {
 
 export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, onRestart, onBackToMenu, onNextLevel, levelId, waveProgress }: GameHUDProps) {
   const [selectedPlant, setSelectedPlant] = useState<PlantType | null>(null)
+  const [shovelActive, setShovelActive] = useState(false)
 
   const handleSelectPlant = useCallback((plantType: PlantType) => {
+    // Deactivate shovel when selecting a plant
+    if (shovelActive) {
+      setShovelActive(false)
+      eventBus?.emit(GameEvent.TOGGLE_SHOVEL)
+    }
+
     if (selectedPlant === plantType) {
       setSelectedPlant(null)
       eventBus?.emit(GameEvent.DESELECT_PLANT)
@@ -30,6 +37,19 @@ export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, 
       setSelectedPlant(plantType)
       eventBus?.emit(GameEvent.SELECT_PLANT, plantType)
     }
+  }, [selectedPlant, shovelActive, eventBus])
+
+  const handleToggleShovel = useCallback(() => {
+    // Deselect plant when toggling shovel
+    if (selectedPlant) {
+      setSelectedPlant(null)
+      eventBus?.emit(GameEvent.DESELECT_PLANT)
+    }
+
+    setShovelActive(prev => {
+      eventBus?.emit(GameEvent.TOGGLE_SHOVEL)
+      return !prev
+    })
   }, [selectedPlant, eventBus])
 
   const handlePauseToggle = useCallback(() => {
@@ -66,7 +86,9 @@ export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, 
         availablePlants={availablePlants}
         cooldowns={cooldowns}
         selectedPlant={selectedPlant}
+        shovelActive={shovelActive}
         onSelectPlant={handleSelectPlant}
+        onToggleShovel={handleToggleShovel}
       />
 
       {/* Pause button - top right */}
@@ -92,7 +114,7 @@ export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, 
             pointerEvents: 'auto',
           }}
         >
-          {gameState === GameState.PAUSED ? '▶' : '❚❚'}
+          {gameState === GameState.PAUSED ? '\u25B6' : '\u275A\u275A'}
         </button>
       )}
 

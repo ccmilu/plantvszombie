@@ -1,16 +1,19 @@
 import type { PlantType } from '../../types/enums.ts'
 import { SunCounter } from './SunCounter.tsx'
 import { PlantCard } from './PlantCard.tsx'
+import { ShovelButton } from './ShovelButton.tsx'
 
 interface ToolbarProps {
   sun: number
   availablePlants: PlantType[]
   cooldowns: Record<string, number>
   selectedPlant: PlantType | null
+  shovelActive: boolean
   onSelectPlant: (plantType: PlantType) => void
+  onToggleShovel: () => void
 }
 
-export function Toolbar({ sun, availablePlants, cooldowns, selectedPlant, onSelectPlant }: ToolbarProps) {
+export function Toolbar({ sun, availablePlants, cooldowns, selectedPlant, shovelActive, onSelectPlant, onToggleShovel }: ToolbarProps) {
   return (
     <div style={{
       position: 'absolute',
@@ -39,6 +42,7 @@ export function Toolbar({ sun, availablePlants, cooldowns, selectedPlant, onSele
           onSelect={onSelectPlant}
         />
       ))}
+      <ShovelButton active={shovelActive} onToggle={onToggleShovel} />
     </div>
   )
 }

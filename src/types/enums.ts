@@ -82,5 +82,8 @@ export const GameEvent = {
   // Plant selection
   SELECT_PLANT: 'SELECT_PLANT',
   DESELECT_PLANT: 'DESELECT_PLANT',
+
+  // Shovel
+  TOGGLE_SHOVEL: 'TOGGLE_SHOVEL',
 } as const
 export type GameEvent = (typeof GameEvent)[keyof typeof GameEvent]

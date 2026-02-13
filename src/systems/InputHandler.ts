@@ -18,6 +18,7 @@ export interface GhostPlant {
 
 export class InputHandler {
   private selectedPlant: PlantType | null = null
+  private shovelMode = false
   private game: Game
   private renderer: Renderer
   private canvas: HTMLCanvasElement
@@ -35,6 +36,7 @@ export class InputHandler {
     // 监听植物选择事件
     game.eventBus.on(GameEvent.SELECT_PLANT, this.onSelectPlant as (...args: unknown[]) => void)
     game.eventBus.on(GameEvent.DESELECT_PLANT, this.onDeselectPlant as (...args: unknown[]) => void)
+    game.eventBus.on(GameEvent.TOGGLE_SHOVEL, this.onToggleShovel as (...args: unknown[]) => void)
 
     // 绑定 canvas 事件
     canvas.addEventListener('click', this.onClick)
@@ -44,11 +46,24 @@ export class InputHandler {
 
   private onSelectPlant = (plantType: PlantType) => {
     this.selectedPlant = plantType
+    this.shovelMode = false
+    this.canvas.style.cursor = 'default'
   }
 
   private onDeselectPlant = () => {
     this.selectedPlant = null
     this.ghostPlant = null
+  }
+
+  private onToggleShovel = () => {
+    this.shovelMode = !this.shovelMode
+    if (this.shovelMode) {
+      this.selectedPlant = null
+      this.ghostPlant = null
+      this.canvas.style.cursor = 'pointer'
+    } else {
+      this.canvas.style.cursor = 'default'
+    }
   }
 
   private screenToWorld(clientX: number, clientY: number) {
@@ -63,6 +78,26 @@ export class InputHandler {
     if (this.game.getState() !== GameState.PLAYING) return
 
     const world = this.screenToWorld(e.clientX, e.clientY)
+
+    // Shovel mode: remove plant at clicked grid cell
+    if (this.shovelMode) {
+      const gridPos = worldToGrid(world.x, world.y)
+      if (!gridPos) return
+
+      if (this.levelHandle.grid[gridPos.row][gridPos.col]) {
+        // Find and destroy the plant entity at this grid position
+        const plants = this.game.world.byType(EntityType.PLANT)
+        for (const plant of plants) {
+          const gp = plant.get('gridPosition')
+          if (gp && gp.row === gridPos.row && gp.col === gridPos.col) {
+            plant.alive = false
+            this.game.eventBus.emit(GameEvent.PLANT_REMOVED, gridPos.row, gridPos.col)
+            break
+          }
+        }
+      }
+      return
+    }
 
     // 先检查是否点击了阳光
     const suns = this.game.world.byType(EntityType.SUN)
@@ -103,6 +138,11 @@ export class InputHandler {
   }
 
   private onMouseMove = (e: MouseEvent) => {
+    if (this.shovelMode) {
+      this.ghostPlant = null
+      return
+    }
+
     if (!this.selectedPlant) {
       this.ghostPlant = null
       return
@@ -139,11 +179,16 @@ export class InputHandler {
     e.preventDefault()
     this.selectedPlant = null
     this.ghostPlant = null
+    if (this.shovelMode) {
+      this.shovelMode = false
+      this.canvas.style.cursor = 'default'
+    }
   }
 
   destroy(): void {
     this.canvas.removeEventListener('click', this.onClick)
     this.canvas.removeEventListener('mousemove', this.onMouseMove)
     this.canvas.removeEventListener('contextmenu', this.onRightClick)
+    this.canvas.style.cursor = 'default'
   }
 }
