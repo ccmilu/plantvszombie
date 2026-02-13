@@ -6,6 +6,9 @@ import { AudioManager } from './audio/AudioManager.ts'
 import { RotatePrompt } from './ui/components/RotatePrompt.tsx'
 import type { PlantType } from './types/enums.ts'
 
+// 尽早实例化 AudioManager，触发 BGM 预加载（不播放，仅缓冲）
+const audioManager = AudioManager.getInstance()
+
 type Screen =
   | { type: 'menu' }
   | { type: 'level_select' }
@@ -20,7 +23,7 @@ function App() {
     const initAudio = () => {
       if (inited) return
       inited = true
-      AudioManager.getInstance().init()
+      audioManager.init()
       document.removeEventListener('click', initAudio, true)
       document.removeEventListener('touchstart', initAudio, true)
     }

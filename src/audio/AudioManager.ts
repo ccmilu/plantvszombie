@@ -32,6 +32,11 @@ export class AudioManager {
 
   private constructor() {
     this._muted = localStorage.getItem('pvz_muted') === 'true'
+    // 立即预加载 BGM，让浏览器在用户交互前就开始缓冲
+    this.bgm = new Audio('/Grazy Dave.mp3')
+    this.bgm.preload = 'auto'
+    this.bgm.loop = true
+    this.bgm.volume = this._muted ? 0 : 0.3
   }
 
   static getInstance(): AudioManager {
@@ -55,11 +60,7 @@ export class AudioManager {
       this.ctx.resume()
     }
 
-    // 初始化 BGM
-    this.bgm = new Audio('/Grazy Dave.mp3')
-    this.bgm.loop = true
-    this.bgm.volume = this._muted ? 0 : 0.3
-
+    // BGM 已在构造函数中预加载，直接播放
     this.playBGM()
   }
 
