@@ -1,48 +1,50 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { GameScreen } from './ui/screens/GameScreen.tsx'
+import { MainMenu } from './ui/screens/MainMenu.tsx'
+import { LevelSelect } from './ui/screens/LevelSelect.tsx'
+import type { PlantType } from './types/enums.ts'
 
-type Screen = 'menu' | 'game'
+type Screen =
+  | { type: 'menu' }
+  | { type: 'level_select' }
+  | { type: 'game'; levelId: number; selectedPlants: PlantType[] }
 
 function App() {
-  const [screen, setScreen] = useState<Screen>('menu')
+  const [screen, setScreen] = useState<Screen>({ type: 'menu' })
 
-  if (screen === 'game') {
-    return <GameScreen />
+  const goToMenu = useCallback(() => setScreen({ type: 'menu' }), [])
+  const goToLevelSelect = useCallback(() => setScreen({ type: 'level_select' }), [])
+
+  const startGame = useCallback((levelId: number, selectedPlants: PlantType[]) => {
+    setScreen({ type: 'game', levelId, selectedPlants })
+  }, [])
+
+  if (screen.type === 'game') {
+    return (
+      <GameScreen
+        levelId={screen.levelId}
+        selectedPlants={screen.selectedPlants}
+        onBackToMenu={goToLevelSelect}
+        onNextLevel={(nextLevelId, selectedPlants) => {
+          startGame(nextLevelId, selectedPlants)
+        }}
+      />
+    )
   }
 
-  // 主菜单（后续阶段完善）
-  return (
-    <div style={{
-      width: '100vw',
-      height: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#2d5a1b',
-      color: '#fff',
-      fontFamily: 'Arial, sans-serif',
-    }}>
-      <h1 style={{ fontSize: '48px', marginBottom: '20px', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
-        Plants vs Zombies
-      </h1>
-      <button
-        onClick={() => setScreen('game')}
-        style={{
-          padding: '15px 40px',
-          fontSize: '24px',
-          backgroundColor: '#4caf50',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '10px',
-          cursor: 'pointer',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+  if (screen.type === 'level_select') {
+    return (
+      <LevelSelect
+        onBack={goToMenu}
+        onSelectLevel={(levelId) => {
+          // Go to game screen - plant selection happens inside GameScreen
+          startGame(levelId, [])
         }}
-      >
-        Start Game
-      </button>
-    </div>
-  )
+      />
+    )
+  }
+
+  return <MainMenu onPlay={goToLevelSelect} />
 }
 
 export default App
