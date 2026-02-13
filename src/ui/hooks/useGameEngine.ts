@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Game } from '../../engine/Game.ts'
 import { EventBus } from '../../engine/events/EventBus.ts'
 import { Renderer } from '../../renderer/Renderer.ts'
@@ -16,12 +16,6 @@ export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | nul
   const [loading, setLoading] = useState(true)
   const [loadProgress, setLoadProgress] = useState(0)
   const handleRef = useRef<GameEngineHandle | null>(null)
-  const rendererRef = useRef<Renderer | null>(null)
-
-  // 供外部调用的 resize，确保 renderer 同步更新
-  const triggerResize = useCallback(() => {
-    rendererRef.current?.resize()
-  }, [])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -31,7 +25,6 @@ export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | nul
     const eventBus = new EventBus()
     const game = new Game(eventBus)
     const renderer = new Renderer(canvas)
-    rendererRef.current = renderer
 
     loadAllAssets((loaded, total) => {
       if (!destroyed) setLoadProgress(Math.round((loaded / total) * 100))
@@ -49,18 +42,11 @@ export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | nul
       game.start()
 
       setLoading(false)
-
-      // 在下一帧 canvas 变为可见后再 resize
-      requestAnimationFrame(() => {
-        if (!destroyed) renderer.resize()
-      })
     })
 
-    // 用 ResizeObserver 监听 canvas 尺寸变化（包括首次可见）
+    // ResizeObserver 监听 canvas 尺寸变化（含首次可见时）
     const resizeObserver = new ResizeObserver(() => {
-      if (rendererRef.current) {
-        rendererRef.current.resize()
-      }
+      renderer.resize()
     })
     resizeObserver.observe(canvas)
 
@@ -71,9 +57,8 @@ export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | nul
       renderer.destroy()
       eventBus.clear()
       handleRef.current = null
-      rendererRef.current = null
     }
   }, [canvasRef])
 
-  return { loading, loadProgress, handleRef, triggerResize }
+  return { loading, loadProgress, handleRef }
 }
