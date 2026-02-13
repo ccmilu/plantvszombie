@@ -1,13 +1,11 @@
 import { useRef } from 'react'
 import { useGameEngine } from '../hooks/useGameEngine.ts'
-import { useCanvasResize } from '../hooks/useCanvasResize.ts'
 
 export function GameScreen() {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const { loading, loadProgress } = useGameEngine(canvasRef)
-  useCanvasResize(containerRef, canvasRef)
 
   return (
     <div
@@ -25,7 +23,11 @@ export function GameScreen() {
     >
       <canvas
         ref={canvasRef}
-        style={{ display: loading ? 'none' : 'block' }}
+        style={{
+          width: '100%',
+          height: '100%',
+          visibility: loading ? 'hidden' : 'visible',
+        }}
       />
       {loading && (
         <div style={{

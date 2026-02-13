@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { Game } from '../../engine/Game.ts'
 import { EventBus } from '../../engine/events/EventBus.ts'
 import { Renderer } from '../../renderer/Renderer.ts'
@@ -16,6 +16,12 @@ export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | nul
   const [loading, setLoading] = useState(true)
   const [loadProgress, setLoadProgress] = useState(0)
   const handleRef = useRef<GameEngineHandle | null>(null)
+  const rendererRef = useRef<Renderer | null>(null)
+
+  // 供外部调用的 resize，确保 renderer 同步更新
+  const triggerResize = useCallback(() => {
+    rendererRef.current?.resize()
+  }, [])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -25,47 +31,49 @@ export function useGameEngine(canvasRef: React.RefObject<HTMLCanvasElement | nul
     const eventBus = new EventBus()
     const game = new Game(eventBus)
     const renderer = new Renderer(canvas)
+    rendererRef.current = renderer
 
-    // 加载素材
     loadAllAssets((loaded, total) => {
       if (!destroyed) setLoadProgress(Math.round((loaded / total) * 100))
     }).then(assets => {
       if (destroyed) return
 
       renderer.init(assets)
-      renderer.resize()
-
       handleRef.current = { game, renderer, eventBus, assets }
 
-      // 监听 TICK 事件进行渲染
       eventBus.on('TICK', () => {
         renderer.render(game.world)
       })
 
-      // 窗口 resize
-      const onResize = () => renderer.resize()
-      window.addEventListener('resize', onResize)
-
-      // 设为 PLAYING 并启动（暂时，后续会有菜单流程）
       game.setState(GameState.PLAYING)
       game.start()
 
       setLoading(false)
 
-      // 保存清理函数引用
-      ;(game as unknown as Record<string, unknown>).__resizeHandler = onResize
+      // 在下一帧 canvas 变为可见后再 resize
+      requestAnimationFrame(() => {
+        if (!destroyed) renderer.resize()
+      })
     })
+
+    // 用 ResizeObserver 监听 canvas 尺寸变化（包括首次可见）
+    const resizeObserver = new ResizeObserver(() => {
+      if (rendererRef.current) {
+        rendererRef.current.resize()
+      }
+    })
+    resizeObserver.observe(canvas)
 
     return () => {
       destroyed = true
-      const onResize = (game as unknown as Record<string, unknown>).__resizeHandler as (() => void) | undefined
-      if (onResize) window.removeEventListener('resize', onResize)
+      resizeObserver.disconnect()
       game.destroy()
       renderer.destroy()
       eventBus.clear()
       handleRef.current = null
+      rendererRef.current = null
     }
   }, [canvasRef])
 
-  return { loading, loadProgress, handleRef }
+  return { loading, loadProgress, handleRef, triggerResize }
 }
