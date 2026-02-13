@@ -61,7 +61,7 @@ export function setupLevel(game: Game, levelId: number, assets: LoadedAssets): L
   game.registerSystem(createProjectileSystem())
   game.registerSystem(createMovementSystem())
   game.registerSystem(createCollisionSystem())
-  game.registerSystem(createCombatSystem())
+  game.registerSystem(createCombatSystem(game))
   game.registerSystem(createSunSystem(game))
   game.registerSystem(createEffectSystem())
   game.registerSystem(createAnimationSystem(assets))
@@ -102,8 +102,16 @@ export function setupLevel(game: Game, levelId: number, assets: LoadedAssets): L
     sunData.collected = true
   }
 
+  // 监听植物被移除（被僵尸吃掉）
+  const onPlantRemoved = (row: number, col: number) => {
+    if (row >= 0 && row < GRID_ROWS && col >= 0 && col < 9) {
+      grid[row][col] = false
+    }
+  }
+
   game.eventBus.on(GameEvent.PLACE_PLANT, onPlacePlant as (...args: unknown[]) => void)
   game.eventBus.on(GameEvent.COLLECT_SUN, onCollectSun as (...args: unknown[]) => void)
+  game.eventBus.on(GameEvent.PLANT_REMOVED, onPlantRemoved as (...args: unknown[]) => void)
 
   // 启动游戏
   game.setState(GameState.PLAYING)
