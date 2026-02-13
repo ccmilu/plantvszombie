@@ -5,6 +5,7 @@ import { GameEvent, GameState } from '../../types/enums.ts'
 import { Toolbar } from './Toolbar.tsx'
 import { GameOverModal } from './GameOverModal.tsx'
 import { PauseOverlay } from './PauseOverlay.tsx'
+import { ProgressBar } from './ProgressBar.tsx'
 
 interface GameHUDProps {
   sun: number
@@ -123,6 +124,14 @@ export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, 
           onResume={handleResume}
           onRestart={onRestart}
           onBackToMenu={onBackToMenu}
+        />
+      )}
+
+      {/* Wave progress bar */}
+      {(gameState === GameState.PLAYING || gameState === GameState.PAUSED) && (
+        <ProgressBar
+          currentWave={waveProgress.current}
+          totalWaves={waveProgress.total}
         />
       )}
 
