@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import type { EventBus } from '../../engine/events/EventBus.ts'
 import type { PlantType } from '../../types/enums.ts'
 import { GameEvent, GameState } from '../../types/enums.ts'
+import { AudioManager } from '../../audio/AudioManager.ts'
 import { Toolbar } from './Toolbar.tsx'
 import { GameOverModal } from './GameOverModal.tsx'
 import { PauseOverlay } from './PauseOverlay.tsx'
@@ -23,6 +24,7 @@ interface GameHUDProps {
 export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, onRestart, onBackToMenu, onNextLevel, levelId, waveProgress }: GameHUDProps) {
   const [selectedPlant, setSelectedPlant] = useState<PlantType | null>(null)
   const [shovelActive, setShovelActive] = useState(false)
+  const [muted, setMuted] = useState(() => AudioManager.getInstance().muted)
 
   const handleSelectPlant = useCallback((plantType: PlantType) => {
     // Deactivate shovel when selecting a plant
@@ -61,6 +63,11 @@ export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, 
     eventBus?.emit(GameEvent.PAUSE_TOGGLED)
   }, [eventBus])
 
+  const handleToggleMute = useCallback(() => {
+    const newMuted = AudioManager.getInstance().toggleMute()
+    setMuted(newMuted)
+  }, [])
+
   // Listen for Esc key to toggle pause
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -90,33 +97,59 @@ export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, 
         shovelActive={shovelActive}
         onSelectPlant={handleSelectPlant}
         onToggleShovel={handleToggleShovel}
+        eventBus={eventBus}
       />
 
-      {/* Pause button - top right */}
+      {/* Mute button + Pause button - top right */}
       {(gameState === GameState.PLAYING || gameState === GameState.PAUSED) && (
-        <button
-          onClick={handlePauseToggle}
-          style={{
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
-            width: '40px',
-            height: '40px',
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            color: '#fff',
-            border: '2px solid rgba(255,255,255,0.5)',
-            borderRadius: '8px',
-            fontSize: '20px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 15,
-            pointerEvents: 'auto',
-          }}
-        >
-          {gameState === GameState.PAUSED ? '\u25B6' : '\u275A\u275A'}
-        </button>
+        <>
+          <button
+            onClick={handleToggleMute}
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '60px',
+              width: '44px',
+              height: '44px',
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              color: '#fff',
+              border: '2px solid rgba(255,255,255,0.5)',
+              borderRadius: '8px',
+              fontSize: '20px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 15,
+              pointerEvents: 'auto',
+            }}
+          >
+            {muted ? '\uD83D\uDD07' : '\uD83D\uDD0A'}
+          </button>
+          <button
+            onClick={handlePauseToggle}
+            style={{
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              width: '44px',
+              height: '44px',
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              color: '#fff',
+              border: '2px solid rgba(255,255,255,0.5)',
+              borderRadius: '8px',
+              fontSize: '20px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 15,
+              pointerEvents: 'auto',
+            }}
+          >
+            {gameState === GameState.PAUSED ? '\u25B6' : '\u275A\u275A'}
+          </button>
+        </>
       )}
 
       {gameState === GameState.PAUSED && (
@@ -124,6 +157,8 @@ export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, 
           onResume={handleResume}
           onRestart={onRestart}
           onBackToMenu={onBackToMenu}
+          muted={muted}
+          onToggleMute={handleToggleMute}
         />
       )}
 

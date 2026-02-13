@@ -1,4 +1,6 @@
+import type { EventBus } from '../../engine/events/EventBus.ts'
 import type { PlantType } from '../../types/enums.ts'
+import { GameEvent } from '../../types/enums.ts'
 import { PLANT_CONFIGS } from '../../data/plants.ts'
 import { PLANT_CARD_MAP } from '../../data/animations.ts'
 import { ASSET_MAP } from '../../renderer/assets/AssetMap.ts'
@@ -9,9 +11,10 @@ interface PlantCardProps {
   cooldownRatio: number // 0 = ready, 1 = full cooldown
   selected: boolean
   onSelect: (plantType: PlantType) => void
+  eventBus: EventBus | null
 }
 
-export function PlantCard({ plantType, sun, cooldownRatio, selected, onSelect }: PlantCardProps) {
+export function PlantCard({ plantType, sun, cooldownRatio, selected, onSelect, eventBus }: PlantCardProps) {
   const config = PLANT_CONFIGS[plantType]
   const cardKey = PLANT_CARD_MAP[plantType]
   const cardSrc = ASSET_MAP[cardKey]
@@ -19,9 +22,17 @@ export function PlantCard({ plantType, sun, cooldownRatio, selected, onSelect }:
   const ready = cooldownRatio <= 0
   const canUse = affordable && ready
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!canUse || !eventBus) return
+    e.preventDefault()
+    onSelect(plantType)
+    eventBus.emit(GameEvent.DRAG_START, plantType)
+  }
+
   return (
     <div
       onClick={() => canUse && onSelect(plantType)}
+      onTouchStart={handleTouchStart}
       style={{
         position: 'relative',
         width: '55px',

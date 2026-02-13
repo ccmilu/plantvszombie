@@ -1,3 +1,4 @@
+import type { EventBus } from '../../engine/events/EventBus.ts'
 import type { PlantType } from '../../types/enums.ts'
 import { SunCounter } from './SunCounter.tsx'
 import { PlantCard } from './PlantCard.tsx'
@@ -11,9 +12,10 @@ interface ToolbarProps {
   shovelActive: boolean
   onSelectPlant: (plantType: PlantType) => void
   onToggleShovel: () => void
+  eventBus: EventBus | null
 }
 
-export function Toolbar({ sun, availablePlants, cooldowns, selectedPlant, shovelActive, onSelectPlant, onToggleShovel }: ToolbarProps) {
+export function Toolbar({ sun, availablePlants, cooldowns, selectedPlant, shovelActive, onSelectPlant, onToggleShovel, eventBus }: ToolbarProps) {
   return (
     <div style={{
       position: 'absolute',
@@ -40,6 +42,7 @@ export function Toolbar({ sun, availablePlants, cooldowns, selectedPlant, shovel
           cooldownRatio={cooldowns[pt] ?? 0}
           selected={selectedPlant === pt}
           onSelect={onSelectPlant}
+          eventBus={eventBus}
         />
       ))}
       <ShovelButton active={shovelActive} onToggle={onToggleShovel} />

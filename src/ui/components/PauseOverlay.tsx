@@ -2,9 +2,11 @@ interface PauseOverlayProps {
   onResume: () => void
   onRestart: () => void
   onBackToMenu: () => void
+  muted: boolean
+  onToggleMute: () => void
 }
 
-export function PauseOverlay({ onResume, onRestart, onBackToMenu }: PauseOverlayProps) {
+export function PauseOverlay({ onResume, onRestart, onBackToMenu, muted, onToggleMute }: PauseOverlayProps) {
   return (
     <div style={{
       position: 'absolute',
@@ -63,6 +65,22 @@ export function PauseOverlay({ onResume, onRestart, onBackToMenu }: PauseOverlay
           }}
         >
           Restart
+        </button>
+        <button
+          onClick={onToggleMute}
+          style={{
+            padding: '12px 40px',
+            fontSize: '20px',
+            fontWeight: 'bold',
+            backgroundColor: muted ? '#9b59b6' : '#3498db',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            minWidth: '180px',
+          }}
+        >
+          {muted ? 'Unmute' : 'Mute'}
         </button>
         <button
           onClick={onBackToMenu}
