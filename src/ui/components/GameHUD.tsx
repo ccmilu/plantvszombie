@@ -33,14 +33,17 @@ export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, 
       eventBus?.emit(GameEvent.TOGGLE_SHOVEL)
     }
 
-    if (selectedPlant === plantType) {
-      setSelectedPlant(null)
-      eventBus?.emit(GameEvent.DESELECT_PLANT)
-    } else {
-      setSelectedPlant(plantType)
-      eventBus?.emit(GameEvent.SELECT_PLANT, plantType)
-    }
-  }, [selectedPlant, shovelActive, eventBus])
+    // 使用函数式更新，避免闭包捕获的旧值导致 toggle 判断错误
+    setSelectedPlant(prev => {
+      if (prev === plantType) {
+        eventBus?.emit(GameEvent.DESELECT_PLANT)
+        return null
+      } else {
+        eventBus?.emit(GameEvent.SELECT_PLANT, plantType)
+        return plantType
+      }
+    })
+  }, [shovelActive, eventBus])
 
   const handleToggleShovel = useCallback(() => {
     // Deselect plant when toggling shovel
@@ -79,7 +82,13 @@ export function GameHUD({ sun, gameState, cooldowns, availablePlants, eventBus, 
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [eventBus])
 
-  // 放置植物后保留选中状态，允许连续种植同类型植物
+  // 监听 PLANT_PLACED 事件来清除选择（与原版行为一致：种下后取消选中）
+  useEffect(() => {
+    if (!eventBus) return
+    const onPlantPlaced = () => setSelectedPlant(null)
+    eventBus.on(GameEvent.PLANT_PLACED, onPlantPlaced)
+    return () => eventBus.off(GameEvent.PLANT_PLACED, onPlantPlaced)
+  }, [eventBus])
 
   return (
     <>
