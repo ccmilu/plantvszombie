@@ -54,8 +54,8 @@ export function MainMenu({ onPlay }: MainMenuProps) {
         {!full && (
           <span
             style={{
-              color: '#FFD700',
-              fontSize: '14px',
+              color: '#ff2020',
+              fontSize: '18px',
               fontWeight: 'bold',
               textShadow: '1px 1px 3px rgba(0,0,0,0.8)',
               whiteSpace: 'nowrap',
