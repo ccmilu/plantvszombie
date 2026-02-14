@@ -52,12 +52,12 @@ export function GameOverModal({ gameState, levelId, onRestart, onBackToMenu, onN
           textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
           marginBottom: '20px',
         }}>
-          YOU WIN!
+          你赢了!
         </div>
       ) : (
         <img
           src="/images/ZombiesWon.png"
-          alt="Zombies Won"
+          alt="僵尸赢了"
           style={{
             width: '400px',
             maxWidth: '80%',
@@ -82,7 +82,7 @@ export function GameOverModal({ gameState, levelId, onRestart, onBackToMenu, onN
               textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
             }}
           >
-            Next Level
+            下一关
           </button>
         )}
 
@@ -101,7 +101,7 @@ export function GameOverModal({ gameState, levelId, onRestart, onBackToMenu, onN
               textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
             }}
           >
-            Try Again
+            再试一次
           </button>
         )}
 
@@ -119,7 +119,7 @@ export function GameOverModal({ gameState, levelId, onRestart, onBackToMenu, onN
             textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
           }}
         >
-          Level Select
+          选择关卡
         </button>
       </div>
     </div>

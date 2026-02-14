@@ -30,7 +30,7 @@ export function GameScreen({ levelId, onBackToMenu, onNextLevel }: GameScreenPro
   const overlayStyle = useCameraTransform(renderer, canvasRef)
 
   const levelConfig = LEVELS.find(l => l.id === levelId)
-  const levelName = levelConfig?.name ?? `Level ${levelId}`
+  const levelName = levelConfig?.name ?? `第${levelId}关`
   const unlockedPlants = saveManager.getUnlockedPlants()
 
   const handleStartPlaying = useCallback((selected: PlantType[]) => {
@@ -109,7 +109,7 @@ export function GameScreen({ levelId, onBackToMenu, onNextLevel }: GameScreenPro
           fontSize: '24px',
           textAlign: 'center',
         }}>
-          <div>Loading...</div>
+          <div>加载中...</div>
           <div style={{
             width: '300px',
             height: '20px',

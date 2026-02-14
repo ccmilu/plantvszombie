@@ -26,7 +26,7 @@ export function LevelSelect({ onBack, onSelectLevel }: LevelSelectProps) {
         textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
         marginBottom: '40px',
       }}>
-        Choose a Level
+        选择关卡
       </h2>
 
       <div style={{
@@ -101,7 +101,7 @@ export function LevelSelect({ onBack, onSelectLevel }: LevelSelectProps) {
           justifyContent: 'center',
         }}
       >
-        Back
+        返回
       </button>
     </div>
   )

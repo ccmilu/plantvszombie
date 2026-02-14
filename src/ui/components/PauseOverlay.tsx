@@ -30,7 +30,7 @@ export function PauseOverlay({ onResume, onRestart, onBackToMenu, muted, onToggl
         textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
         marginBottom: '30px',
       }}>
-        PAUSED
+        已暂停
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -48,7 +48,7 @@ export function PauseOverlay({ onResume, onRestart, onBackToMenu, muted, onToggl
             minWidth: '180px',
           }}
         >
-          Resume
+          继续
         </button>
         <button
           onClick={onRestart}
@@ -64,7 +64,7 @@ export function PauseOverlay({ onResume, onRestart, onBackToMenu, muted, onToggl
             minWidth: '180px',
           }}
         >
-          Restart
+          重新开始
         </button>
         <button
           onClick={onToggleMute}
@@ -80,7 +80,7 @@ export function PauseOverlay({ onResume, onRestart, onBackToMenu, muted, onToggl
             minWidth: '180px',
           }}
         >
-          {muted ? 'Unmute' : 'Mute'}
+          {muted ? '取消静音' : '静音'}
         </button>
         <button
           onClick={onBackToMenu}
@@ -96,7 +96,7 @@ export function PauseOverlay({ onResume, onRestart, onBackToMenu, muted, onToggl
             minWidth: '180px',
           }}
         >
-          Back to Menu
+          返回菜单
         </button>
       </div>
     </div>

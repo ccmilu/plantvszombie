@@ -49,7 +49,7 @@ export function MainMenu({ onPlay }: MainMenuProps) {
         marginBottom: '60px',
         letterSpacing: '2px',
       }}>
-        Plants vs Zombies
+        植物大战僵尸
       </h1>
 
       <button
@@ -72,7 +72,7 @@ export function MainMenu({ onPlay }: MainMenuProps) {
           justifyContent: 'center',
         }}
       >
-        Adventure
+        冒险模式
       </button>
     </div>
   )

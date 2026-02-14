@@ -1,6 +1,6 @@
 {
-  "name": "Plants vs Zombies",
-  "short_name": "PvZ",
+  "name": "植物大战僵尸",
+  "short_name": "植物大战僵尸",
   "start_url": "/",
   "display": "fullscreen",
   "orientation": "landscape",

@@ -58,7 +58,7 @@ export function PlantSelectOverlay({ levelName, unlockedPlants, onStart, onBack 
         fontSize: '16px',
         marginBottom: '24px',
       }}>
-        Choose your plants ({selected.length}/{MAX_PLANTS})
+        选择要出战的植物-可多选 ({selected.length}/{MAX_PLANTS})
       </p>
 
       <div style={{
@@ -117,7 +117,7 @@ export function PlantSelectOverlay({ levelName, unlockedPlants, onStart, onBack 
                 color: '#FFD700',
                 fontSize: '10px',
               }}>
-                {config.cost} sun
+                {config.cost} 阳光
               </span>
             </div>
           )
@@ -138,7 +138,7 @@ export function PlantSelectOverlay({ levelName, unlockedPlants, onStart, onBack 
             cursor: 'pointer',
           }}
         >
-          Back
+          返回
         </button>
         <button
           onClick={() => canStart && onStart(selected)}
@@ -154,7 +154,7 @@ export function PlantSelectOverlay({ levelName, unlockedPlants, onStart, onBack 
             opacity: canStart ? 1 : 0.5,
           }}
         >
-          Start!
+          开始!
         </button>
       </div>
     </div>

@@ -53,7 +53,7 @@ export function ProgressBar({ currentWave, totalWaves }: ProgressBarProps) {
           textShadow: '1px 1px 1px rgba(0,0,0,0.8)',
           whiteSpace: 'nowrap',
         }}>
-          Wave {currentWave}/{totalWaves}
+          第 {currentWave}/{totalWaves} 波
         </span>
       </div>
 

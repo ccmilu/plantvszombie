@@ -53,13 +53,13 @@ export function RotatePrompt() {
         fontWeight: 'bold',
         marginBottom: '12px',
       }}>
-        Please Rotate Your Device
+        请旋转您的设备
       </div>
       <div style={{
         fontSize: '16px',
         color: 'rgba(255,255,255,0.7)',
       }}>
-        This game is best played in landscape mode
+        本游戏建议横屏体验
       </div>
     </div>
   )

@@ -4,7 +4,7 @@ import type { LevelConfig } from '../types/index.ts'
 export const LEVELS: LevelConfig[] = [
   {
     id: 1,
-    name: 'Level 1-1',
+    name: '第1-1关',
     availablePlants: [PlantType.SUNFLOWER, PlantType.PEASHOOTER],
     newPlants: [PlantType.SUNFLOWER, PlantType.PEASHOOTER],
     initialSun: 50,
@@ -31,7 +31,7 @@ export const LEVELS: LevelConfig[] = [
   },
   {
     id: 2,
-    name: 'Level 1-2',
+    name: '第1-2关',
     availablePlants: [PlantType.SUNFLOWER, PlantType.PEASHOOTER, PlantType.WALLNUT, PlantType.SNOW_PEA],
     newPlants: [PlantType.WALLNUT, PlantType.SNOW_PEA],
     initialSun: 100,
@@ -67,7 +67,7 @@ export const LEVELS: LevelConfig[] = [
   },
   {
     id: 3,
-    name: 'Level 1-3',
+    name: '第1-3关',
     availablePlants: [PlantType.SUNFLOWER, PlantType.PEASHOOTER, PlantType.WALLNUT, PlantType.SNOW_PEA, PlantType.CHERRY_BOMB, PlantType.POTATO_MINE],
     newPlants: [PlantType.CHERRY_BOMB, PlantType.POTATO_MINE],
     initialSun: 150,
@@ -114,7 +114,7 @@ export const LEVELS: LevelConfig[] = [
   },
   {
     id: 4,
-    name: 'Level 1-4',
+    name: '第1-4关',
     availablePlants: [PlantType.SUNFLOWER, PlantType.PEASHOOTER, PlantType.WALLNUT, PlantType.SNOW_PEA, PlantType.CHERRY_BOMB, PlantType.POTATO_MINE, PlantType.REPEATER],
     newPlants: [PlantType.REPEATER],
     initialSun: 200,
@@ -172,7 +172,7 @@ export const LEVELS: LevelConfig[] = [
   },
   {
     id: 5,
-    name: 'Level 1-5',
+    name: '第1-5关',
     availablePlants: [PlantType.SUNFLOWER, PlantType.PEASHOOTER, PlantType.WALLNUT, PlantType.SNOW_PEA, PlantType.CHERRY_BOMB, PlantType.POTATO_MINE, PlantType.REPEATER],
     newPlants: [],
     initialSun: 250,
