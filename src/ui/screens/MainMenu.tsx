@@ -1,10 +1,30 @@
+import { useState, useEffect } from 'react'
 import { toggleFullscreen, isFullscreen } from '../../utils/fullscreen.ts'
+
+const BLINK_KEYFRAMES = `
+@keyframes fullscreen-hint-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+`
 
 interface MainMenuProps {
   onPlay: () => void
 }
 
 export function MainMenu({ onPlay }: MainMenuProps) {
+  const [full, setFull] = useState(isFullscreen)
+
+  useEffect(() => {
+    const onFsChange = () => setFull(isFullscreen())
+    document.addEventListener('fullscreenchange', onFsChange)
+    document.addEventListener('webkitfullscreenchange', onFsChange)
+    return () => {
+      document.removeEventListener('fullscreenchange', onFsChange)
+      document.removeEventListener('webkitfullscreenchange', onFsChange)
+    }
+  }, [])
+
   return (
     <div style={{
       width: '100vw',
@@ -19,28 +39,51 @@ export function MainMenu({ onPlay }: MainMenuProps) {
       fontFamily: 'Arial, sans-serif',
       position: 'relative',
     }}>
-      {/* Fullscreen button - top right */}
-      <button
-        onClick={() => toggleFullscreen()}
-        style={{
-          position: 'absolute',
-          top: '10px',
-          right: '10px',
-          width: '44px',
-          height: '44px',
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          color: '#fff',
-          border: '2px solid rgba(255,255,255,0.5)',
-          borderRadius: '8px',
-          fontSize: '20px',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        {isFullscreen() ? '\u2716' : '\u26F6'}
-      </button>
+      {/* Inject blink keyframes */}
+      <style>{BLINK_KEYFRAMES}</style>
+
+      {/* Fullscreen button + hint */}
+      <div style={{
+        position: 'absolute',
+        top: '10px',
+        right: '10px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+      }}>
+        {!full && (
+          <span
+            style={{
+              color: '#FFD700',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              textShadow: '1px 1px 3px rgba(0,0,0,0.8)',
+              whiteSpace: 'nowrap',
+              animation: 'fullscreen-hint-blink 1.5s ease-in-out infinite',
+            }}
+          >
+            建议全屏游玩 →
+          </span>
+        )}
+        <button
+          onClick={() => toggleFullscreen()}
+          style={{
+            width: '44px',
+            height: '44px',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            color: '#fff',
+            border: '2px solid rgba(255,255,255,0.5)',
+            borderRadius: '8px',
+            fontSize: '20px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {full ? '\u2716' : '\u26F6'}
+        </button>
+      </div>
 
       <h1 style={{
         fontSize: '56px',
